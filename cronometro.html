@@ -9,12 +9,19 @@
     <body>
         <nav class="navbar">
             <ul>
-                <li><a href="cronometro.html">Cronometro</a></li>
+                <li><a href="index.html">Reloj</a></li>
             </ul>
         </nav>
-        <h2>Reloj</h2>
+        <h2>Cronómetro</h2>
         <div class="clima" id="clima">Cargando clima...</div>
-        <div class="reloj" id="reloj">Cargando hora...</div>
+
+        <div class="cronometro-container" id="cronometro-container">
+            <div id="tiempo">00:00</div>
+            <button id="iniciar">Iniciar</button>
+            <button id="detener">Detener</button>
+            <button id="resetear">Resetear</button>
+        </div>
+
         <video autoplay loop muted id="videoFondo">
             <source src="mp4/nubes-dia.mp4" type="video/mp4">
            <!--por si no se pudo cargar--> Tu navegador no soporta videos.

@@ -1,79 +1,105 @@
-function actualizarReloj() {
-    const ahora = new Date();
-    let horas = ahora.getHours().toString().padStart(2, "0");
-    let minutos = ahora.getMinutes().toString().padStart(2, "0");
-    let segundos = ahora.getSeconds().toString().padStart(2, "0");
-    
-    document.getElementById("reloj").textContent = `${horas}:${minutos}:${segundos}`;
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const relojContainer = document.getElementById('reloj');
+    const cronometroContainer = document.getElementById('cronometro-container');
+    const iniciarButton = document.getElementById('iniciar');
+    const detenerButton = document.getElementById('detener');
+    const resetearButton = document.getElementById('resetear');
+    const tiempoDisplay = document.getElementById('tiempo');
 
-function obtenerClima(lat, lon) {
-    const apiKey = '4d03231504ee82bd1bf26ea8c14a77e7'; // Reemplaza con tu API Key de OpenWeatherMap
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=es`;
-    
-    console.log("Obteniendo clima de:", url); // 👀 Ver si la URL se genera bien
-    
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Datos del clima recibidos:", data); // 👀 Ver la respuesta de la API
+    // Verificar si los elementos existen antes de agregar los event listeners
+    if (iniciarButton && detenerButton && resetearButton && tiempoDisplay) {
+        let tiempoCronometro;
+        let minutos = 0;
+        let segundos = 0;
 
-            if (!data.weather || data.weather.length === 0) {
-                console.error("No se encontró información del clima");
-                return;
-            }
-
-            const temperatura = data.main.temp;
-            const descripcion = data.weather[0].description.toLowerCase();
-            document.getElementById("clima").textContent = `Clima: ${descripcion}, ${temperatura}°C`;
-            
-            const horaActual = new Date().getHours();
-            const esDeDia = horaActual >= 6 && horaActual < 18;
-            
-            console.log("Descripción del clima:", descripcion);
-            console.log("Es de día?", esDeDia);
-
-            const videosPorClima = {
-                nublado: {
-                    dia: "-PJ1iYzkW2M", // ID del video de nublado (día)
-                    noche: "TWyWK6NFHvo" // ID del video de nublado (noche)
-                },
-                lluvia: {
-                    dia: "GZ0tNw8_TXc", // ID del video de lluvia (día)
-                    noche: "_6VomlptOxk" // ID del video de tormenta (noche)
-                },
-                despejado: {
-                    dia: "QITySTfukH8", // ID del video de soleado (día)
-                    noche: "v5uKOyUKsHA" // ID del video de noche despejada (noche)
+        iniciarButton.addEventListener('click', function() {
+            tiempoCronometro = setInterval(function() {
+                segundos++;
+                if (segundos >= 60) {
+                    segundos = 0;
+                    minutos++;
                 }
-            };
-            
-            //clima actual
-            const clima = descripcion.includes("nub") ? "nublado" :
-                          descripcion.includes("lluvia") ? "lluvia" :
-                          descripcion.includes("despejado") ? "despejado" : "default";
-            
-            const videoId = videosPorClima[clima] ? 
-            (esDeDia ? videosPorClima[clima].dia : videosPorClima[clima].noche) :
-            "QITySTfukH8"; // ID por defecto corresponde a un dia soleado con flores
-            
-            const videoFondo = document.getElementById("videoFondo");
-            videoFondo.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
-                })
-            .catch(error => console.error("Error obteniendo el clima", error));
-            }
+                tiempoDisplay.textContent = `${minutos.toString().padStart(2, "0")}:${segundos.toString().padStart(2, "0")}`;
+            }, 1000);
+        });
 
-function obtenerUbicacion() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            position => obtenerClima(position.coords.latitude, position.coords.longitude),
-            error => console.error("Error obteniendo la ubicación", error)
-        );
-    } else {
-        console.error("Geolocalización no soportada");
+        detenerButton.addEventListener('click', function() {
+            clearInterval(tiempoCronometro);
+        });
+
+        resetearButton.addEventListener('click', function() {
+            clearInterval(tiempoCronometro);
+            minutos = 0;
+            segundos = 0;
+            tiempoDisplay.textContent = "00:00";
+        });
     }
-}
 
-setInterval(actualizarReloj, 1000);
-actualizarReloj();
-obtenerUbicacion();
+    // Reloj y clima en común (también para index.html)
+    function actualizarReloj() {
+        const reloj = document.getElementById("reloj");
+        const ahora = new Date();
+        let horas = ahora.getHours().toString().padStart(2, "0");
+        let minutos = ahora.getMinutes().toString().padStart(2, "0");
+        let segundos = ahora.getSeconds().toString().padStart(2, "0");
+
+        reloj.textContent = `${horas}:${minutos}:${segundos}`;
+    }
+
+    function obtenerClima(lat, lon) {
+        const apiKey = '4d03231504ee82bd1bf26ea8c14a77e7'; 
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=es`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const descripcion = data.weather[0].description.toLowerCase();
+                const temperatura = data.main.temp;
+                document.getElementById("clima").textContent = `Clima: ${descripcion}, ${temperatura}°C`;
+               
+                const horaActual = new Date().getHours();
+                const esDeDia = horaActual >= 6 && horaActual < 18;
+
+                let videoUrl;
+                let sombraNumeros;
+
+                if (descripcion.includes("nub")) {
+                    videoUrl = esDeDia ? "mp4/nubes-dia.mp4" : "mp4/nubes-noche.mp4";
+                } else if (descripcion.includes("lluv") || descripcion.includes("torm")) {
+                    videoUrl = esDeDia ? "mp4/lluvia-dia.mp4" : "mp4/tormenta-noche.mp4";
+                } else if (descripcion.includes("despejado") || descripcion.includes("soleado") || descripcion.includes("claro")) {
+                    videoUrl = esDeDia ? "mp4/soleado.mp4" : "mp4/noche-despejado.mp4";
+                } else {
+                    videoUrl = esDeDia ? "mp4/lluvia-dia.mp4" : "mp4/noche-despejado.mp4";
+                }
+
+                sombraNumeros = esDeDia ? "gray" : "yellow";
+
+                // Actualizar la sombra y el video de fondo
+                reloj.style.boxShadow = `0 0 15px ${sombraNumeros}, 0 0 25px ${sombraNumeros}, 0 0 5px ${sombraNumeros}`;
+                reloj.style.textShadow = `2px 2px 10px ${sombraNumeros}, 0 0 25px ${sombraNumeros}, 0 0 5px ${sombraNumeros}`;
+
+                const videoFondo = document.getElementById("videoFondo");
+                const sourceVideo = videoFondo.querySelector("source");
+                sourceVideo.src = videoUrl;
+                videoFondo.load();
+            })
+            .catch(error => console.error("Error obteniendo el clima", error));
+    }
+
+    function obtenerUbicacion() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => obtenerClima(position.coords.latitude, position.coords.longitude),
+                error => console.error("Error obteniendo la ubicación", error)
+            );
+        } else {
+            console.error("Geolocalización no soportada");
+        }
+    }
+
+    // Llamadas comunes
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+    obtenerUbicacion();
+});
