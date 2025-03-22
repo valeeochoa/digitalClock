@@ -30,13 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 let sombraNumeros;
 
                 if (descripcion.includes("nub")) {
-                    videoUrl = esDeDia ? "mp4/nubes-dia.mp4" : "mp4/nubes-noche.mp4";
+                    videoUrl = esDeDia ? "https://github.com/valeeochoa/digitalClock/releases/download/1.0/nubes-dia.mp4" : "https://github.com/valeeochoa/digitalClock/releases/download/1.0/nubes-noche.mp4";
                 } else if (descripcion.includes("lluv") || descripcion.includes("torm")) {
-                    videoUrl = esDeDia ? "mp4/lluvia-dia.mp4" : "mp4/tormenta-noche.mp4";
+                    videoUrl = esDeDia ? "https://github.com/valeeochoa/digitalClock/releases/download/1.0/lluvia-dia.mp4" : "https://github.com/valeeochoa/digitalClock/releases/download/1.0/tormenta-noche.mp4";
                 } else if (descripcion.includes("despejado") || descripcion.includes("soleado") || descripcion.includes("claro")) {
-                    videoUrl = esDeDia ? "mp4/soleado.mp4" : "mp4/noche-despejado.mp4";
+                    videoUrl = esDeDia ? "https://github.com/valeeochoa/digitalClock/releases/download/1.0/soleado.mp4" : "https://github.com/valeeochoa/digitalClock/releases/download/1.0/noche-despejado.mp4";
                 } else {
-                    videoUrl = esDeDia ? "mp4/lluvia-dia.mp4" : "mp4/noche-despejado.mp4";
+                    videoUrl = esDeDia ? "https://github.com/valeeochoa/digitalClock/releases/download/1.0/lluvia-dia.mp4" : "https://github.com/valeeochoa/digitalClock/releases/download/1.0/noche-despejado.mp4";
                 }
 
                 sombraNumeros = esDeDia ? "gray" : "black";
