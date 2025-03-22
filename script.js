@@ -1,39 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const relojContainer = document.getElementById('reloj');
-    const cronometroContainer = document.getElementById('cronometro-container');
-    const iniciarButton = document.getElementById('iniciar');
-    const detenerButton = document.getElementById('detener');
-    const resetearButton = document.getElementById('resetear');
-    const tiempoDisplay = document.getElementById('tiempo');
-
-    // Verificar si los elementos existen antes de agregar los event listeners
-    if (iniciarButton && detenerButton && resetearButton && tiempoDisplay) {
-        let tiempoCronometro;
-        let minutos = 0;
-        let segundos = 0;
-
-        iniciarButton.addEventListener('click', function() {
-            tiempoCronometro = setInterval(function() {
-                segundos++;
-                if (segundos >= 60) {
-                    segundos = 0;
-                    minutos++;
-                }
-                tiempoDisplay.textContent = `${minutos.toString().padStart(2, "0")}:${segundos.toString().padStart(2, "0")}`;
-            }, 1000);
-        });
-
-        detenerButton.addEventListener('click', function() {
-            clearInterval(tiempoCronometro);
-        });
-
-        resetearButton.addEventListener('click', function() {
-            clearInterval(tiempoCronometro);
-            minutos = 0;
-            segundos = 0;
-            tiempoDisplay.textContent = "00:00";
-        });
-    }
+    
 
     // Reloj y clima en común (también para index.html)
     function actualizarReloj() {
@@ -73,10 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     videoUrl = esDeDia ? "mp4/lluvia-dia.mp4" : "mp4/noche-despejado.mp4";
                 }
 
-                sombraNumeros = esDeDia ? "gray" : "yellow";
+                sombraNumeros = esDeDia ? "gray" : "black";
 
                 // Actualizar la sombra y el video de fondo
-                reloj.style.boxShadow = `0 0 15px ${sombraNumeros}, 0 0 25px ${sombraNumeros}, 0 0 5px ${sombraNumeros}`;
                 reloj.style.textShadow = `2px 2px 10px ${sombraNumeros}, 0 0 25px ${sombraNumeros}, 0 0 5px ${sombraNumeros}`;
 
                 const videoFondo = document.getElementById("videoFondo");
